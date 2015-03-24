@@ -378,17 +378,13 @@ var hit = intersects
 	if (hit == true)
 
 
-Player.Dead = true
-gameState = STATE_GAMEOVER
+//Player.Dead = true
+//gameState = STATE_GAMEOVER
 };
 
 
 function runEnd(dt)
-
-					{};
-
-
-
+{};
 //callback function to run each frame
 function run()
 {
