@@ -28,6 +28,8 @@ var STATE_SPLASH = 0;
 var STATE_GAME = 1;
 var STATE_GAMEOVER = 2;
 
+var PlayerScore = 0;
+
 var gameState = STATE_SPLASH;
 
 //ALL OUR VARIABLES
@@ -61,7 +63,8 @@ var Player =
 	directionY: 0,
 	Dead : false,
 	angularDirection: 0,
-	rotation: 0
+	rotation: 0,
+	lives: 3
 };
 
 //set the image for the player to use
@@ -280,6 +283,13 @@ function runGame(dt)
 		}
 	}
 
+	
+	//draw the player score to the screen
+    context.font = "18px Arial";
+    var TextMeasure = context.measureText("Score: " + PlayerScore);
+    context.fillText("Score: " + PlayerScore, SCREEN_WIDTH/3 - (TextMeasure.width/3), SCREEN_HEIGHT/3);
+
+	
 	////////////////////////////////////////////////////////////
 	//Player Movement
 	var s = Math.sin(Player.rotation);
@@ -298,8 +308,22 @@ function runGame(dt)
 	Player.rotation += Player.angularDirection * PLAYER_TURN_SPEED;
 
 	//draw the player adjusting player origin
-	if(!Player.Dead)
+for (var i = 0 ; i < Asteroids.length; i++)
 	{
+		//if the player hits an Asteroid, takes out one life and the Asteroid
+		if (intersects(	Player.x - Player.width/2, Player.y - Player.height/2,
+						Player.width, Player.height,
+						Asteroids[i].x - Asteroids[i].width/2, Asteroids[i].y - Asteroids[i].height/2,
+						Asteroids[i].width, Asteroids[i].height))
+		{
+			Player.lives -= 1;
+			Asteroids.splice(i, 1);
+		}
+	
+	
+	if (Player.lives <= 0)
+		gameState = STATE_GAMEOVER;
+	//draw the player adjusting player origin
 	context.save();
 		context.translate( Player.x, Player.y);
 		context.rotate(Player.rotation);
@@ -358,6 +382,7 @@ function runGame(dt)
 								Asteroids[j].width, Asteroids[j].height);
 				if (hit == true)
 				{
+					PlayerScore ++;
 					Bullets.splice(i,1);
 					Asteroids.splice(j,1);
 					break;
@@ -367,20 +392,14 @@ function runGame(dt)
 	}
 }
 
-{
-for (var j = 0; j < Asteroids.length; j++)
+
+	//draw the player score to the screen
+    context.font = "18px Arial";
+    var TextMeasure = context.measureText("Score: " + PlayerScore);
+    context.fillText("Score: " + PlayerScore, SCREEN_WIDTH/3 - (TextMeasure.width/3), SCREEN_HEIGHT/3);
+
 	
-var hit = intersects
-		(Player.x, Player.y,
-		Player.width, Player.height,
-		Asteroids[j].x, Asteroids[j].y,
-		Asteroids[j].width, Asteroids[j].height);
-	if (hit == true)
-
-
-//Player.Dead = true
-//gameState = STATE_GAMEOVER
-};
+	
 
 
 function runEnd(dt)
